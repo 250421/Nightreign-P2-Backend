@@ -1,4 +1,4 @@
-package com.project2;
+package com.project2.configs;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;

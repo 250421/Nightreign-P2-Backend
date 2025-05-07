@@ -1,4 +1,4 @@
-package com.project2.errorResponse;
+package com.project2.utils;
 
 public class ErrorResponse {
     private String message;

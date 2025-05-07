@@ -1,4 +1,4 @@
-package com.project2.entities;
+package com.project2.dtos;
 
 public class UserDTO {
     private Integer id;

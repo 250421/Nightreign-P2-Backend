@@ -1,8 +1,8 @@
 package com.project2.controllers;
 
-import com.project2.ErrorResponse;
+import com.project2.utils.ErrorResponse;
 import com.project2.entities.User;
-import com.project2.entities.UserDTO;
+import com.project2.dtos.UserDTO;
 import com.project2.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -110,7 +110,7 @@ public class ApplicationController {
             return ResponseEntity.status(401).body(e);
         }
 
-        UserDTO accountDTO = (UserDTO) user;
-        return ResponseEntity.ok(accountDTO);
+        UserDTO userDTO = (UserDTO) user;
+        return ResponseEntity.ok(userDTO);
     }
 }
