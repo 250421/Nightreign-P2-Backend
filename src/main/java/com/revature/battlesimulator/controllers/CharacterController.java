@@ -2,7 +2,6 @@ package com.revature.battlesimulator.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.revature.battlesimulator.services.CharacterService;
-import com.revature.battlesimulator.services.SessionService;
-import com.revature.battlesimulator.utils.custom_exceptions.InsufficientPermissionException;
-import com.revature.battlesimulator.utils.custom_exceptions.UnauthenticatedUserException;
 import com.revature.battlesimulator.dtos.requests.NewCharacterRequest;
 import com.revature.battlesimulator.dtos.requests.UpdateCharacterRequest;
 import com.revature.battlesimulator.dtos.responses.UserSessionResponse;
@@ -24,8 +19,8 @@ import com.revature.battlesimulator.models.Character;
 import com.revature.battlesimulator.models.Role;
 import com.revature.battlesimulator.services.CharacterService;
 import com.revature.battlesimulator.services.SessionService;
-import com.revature.battlesimulator.utils.custom_exceptions.AuthorizationErrorException;
-import com.revature.battlesimulator.utils.custom_exceptions.InvalidSessionException;
+import com.revature.battlesimulator.utils.custom_exceptions.InsufficientPermissionException;
+import com.revature.battlesimulator.utils.custom_exceptions.UnauthenticatedUserException;
 
 import lombok.Data;
 
@@ -36,8 +31,7 @@ public class CharacterController {
     private final CharacterService characterService;
     private final SessionService sessionService;
 
-    @Autowired
-    public CharacterController(CharacterService characterService, SessionService sessionService) {
+    public CharacterController (CharacterService characterService, SessionService sessionService) {
         this.characterService = characterService;
         this.sessionService = sessionService;
     }
@@ -71,13 +65,7 @@ public class CharacterController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCharacter(@PathVariable Long id) {
-        UserSessionResponse userSession = sessionService.getCurrentSession();
-        if (userSession == null) {
-            throw new InvalidSessionException("You must be logged in to delete a character");
-        }
-        if (userSession.getRole() != Role.ADMIN) {
-            throw new AuthorizationErrorException("You must be an admin to delete a character");
-        }
+        verifyAdminAccess("delete a character");
         characterService.deleteCharacter(id);
         return ResponseEntity.noContent().build();
     }

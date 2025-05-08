@@ -1,19 +1,20 @@
 package com.revature.battlesimulator.controllers;
 
-import com.revature.battlesimulator.dtos.responses.ErrorResponse;
-import com.revature.battlesimulator.dtos.responses.UserSessionResponse;
-import com.revature.battlesimulator.models.User;
-import com.revature.battlesimulator.services.UserService;
-import com.revature.battlesimulator.services.SessionService;
-import com.revature.battlesimulator.utils.custom_exceptions.AuthorizationErrorException;
-import com.revature.battlesimulator.utils.custom_exceptions.DuplicateUsernameException;
-import com.revature.battlesimulator.utils.custom_exceptions.InvalidInformationException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.revature.battlesimulator.dtos.responses.ErrorResponse;
+import com.revature.battlesimulator.dtos.responses.UserSessionResponse;
+import com.revature.battlesimulator.models.User;
+import com.revature.battlesimulator.services.SessionService;
+import com.revature.battlesimulator.services.UserService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @RestController
@@ -32,7 +33,7 @@ public class AuthController {
     @PostMapping("/auth/sign-up")
     public ResponseEntity<?> register(@RequestBody User user, HttpServletRequest request) {
         // Check if the user is already logged in
-        if(sessionService.getCurrentSession() != null) {
+        if(sessionService.getActiveUserSession() != null) {
             ErrorResponse e = new ErrorResponse("You are already logged in.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e);
         }
@@ -84,7 +85,7 @@ public class AuthController {
     @PostMapping("/auth/sign-in")
     public ResponseEntity<?> login(@RequestBody User user, HttpServletRequest request) {
         // Check if the user is already logged in
-        UserSessionResponse userSession = sessionService.getCurrentSession();
+        UserSessionResponse userSession = sessionService.getActiveUserSession();
         if (userSession != null) {
             ErrorResponse e = new ErrorResponse("You are already logged in.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e);
@@ -98,7 +99,7 @@ public class AuthController {
             return ResponseEntity.status(404).body(e);
             //throw new InvalidInformationException("Invalid Credentials");
         }
-        sessionService.createSession(user);
+        sessionService.startUserSession(user);
         UserSessionResponse loggedInUser = new UserSessionResponse(found);
 
         return ResponseEntity.status(HttpStatus.OK).body(loggedInUser);
@@ -106,7 +107,7 @@ public class AuthController {
 
     @PostMapping("/auth/sign-out")
     public ResponseEntity<?> logout(HttpServletRequest request) {
-        sessionService.invalidateSession();
+        sessionService.endUserSession();
         ErrorResponse e = new ErrorResponse("Successfully logged out");
         return ResponseEntity.status(200).body(e);
     }
@@ -114,7 +115,7 @@ public class AuthController {
     @GetMapping("/auth")
     public ResponseEntity<?> profile(HttpServletRequest request) {
 
-        UserSessionResponse user = sessionService.getCurrentSession();
+        UserSessionResponse user = sessionService.getActiveUserSession();
         if(user == null) {
             ErrorResponse e = new ErrorResponse("User is not logged in");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e);
