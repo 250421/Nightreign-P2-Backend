@@ -12,19 +12,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.revature.battlesimulator.services.CharacterService;
-import com.revature.battlesimulator.services.SessionService;
-import com.revature.battlesimulator.utils.custom_exceptions.InsufficientPermissionException;
-import com.revature.battlesimulator.utils.custom_exceptions.UnauthenticatedUserException;
 import com.revature.battlesimulator.dtos.requests.NewCharacterRequest;
 import com.revature.battlesimulator.dtos.requests.UpdateCharacterRequest;
 import com.revature.battlesimulator.dtos.responses.UserSessionResponse;
 import com.revature.battlesimulator.models.Character;
 import com.revature.battlesimulator.models.Role;
+import com.revature.battlesimulator.services.CharacterService;
+import com.revature.battlesimulator.services.SessionService;
+import com.revature.battlesimulator.utils.custom_exceptions.InsufficientPermissionException;
+import com.revature.battlesimulator.utils.custom_exceptions.UnauthenticatedUserException;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/characters")
 @Data
 public class CharacterController {

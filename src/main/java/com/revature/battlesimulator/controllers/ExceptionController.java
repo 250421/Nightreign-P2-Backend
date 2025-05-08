@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.revature.battlesimulator.utils.custom_exceptions.CharacterNotFoundException;
 import com.revature.battlesimulator.utils.custom_exceptions.DuplicateCharacterNameException;
+import com.revature.battlesimulator.utils.custom_exceptions.InvalidInformationException;
+import com.revature.battlesimulator.utils.custom_exceptions.UserNotFoundException;
 
 @ControllerAdvice
 public class ExceptionController {
@@ -22,6 +24,20 @@ public class ExceptionController {
     @ExceptionHandler(DuplicateCharacterNameException.class)
     public ResponseEntity<Map<String, Object>> DuplicateCharacterNameException(DuplicateCharacterNameException e) {
         Map<String, Object> response = new HashMap<>();
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> UserNotFoundException(UserNotFoundException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", e.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(InvalidInformationException.class)
+    public ResponseEntity<Map<String, Object>> InvalidInformationException(InvalidInformationException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", e.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
 }
