@@ -22,19 +22,16 @@ import com.revature.battlesimulator.services.SessionService;
 import com.revature.battlesimulator.utils.custom_exceptions.InsufficientPermissionException;
 import com.revature.battlesimulator.utils.custom_exceptions.UnauthenticatedUserException;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/characters")
 @Data
 public class CharacterController {
     private final CharacterService characterService;
     private final SessionService sessionService;
-
-    public CharacterController (CharacterService characterService, SessionService sessionService) {
-        this.characterService = characterService;
-        this.sessionService = sessionService;
-    }
 
     @GetMapping
     public ResponseEntity<List<Character>> getAllCharacters() {

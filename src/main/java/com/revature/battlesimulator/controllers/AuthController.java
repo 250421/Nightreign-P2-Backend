@@ -1,11 +1,12 @@
 package com.revature.battlesimulator.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.battlesimulator.dtos.responses.ErrorResponse;
@@ -13,24 +14,22 @@ import com.revature.battlesimulator.dtos.responses.UserSessionResponse;
 import com.revature.battlesimulator.models.User;
 import com.revature.battlesimulator.services.SessionService;
 import com.revature.battlesimulator.services.UserService;
+import com.revature.battlesimulator.utils.custom_exceptions.InvalidInformationException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 
 
 @RestController
+@AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@RequestMapping("/auth")
 public class AuthController {
 
-    private UserService userService;
-    private SessionService sessionService;
+    private final UserService userService;
+    private final SessionService sessionService;
 
-    @Autowired
-    public AuthController(UserService accountService, SessionService sessionService) {
-        this.userService = accountService;
-        this.sessionService = sessionService;
-    }
-
-
-    @PostMapping("/auth/sign-up")
+    @PostMapping("/sign-up")
     public ResponseEntity<?> register(@RequestBody User user, HttpServletRequest request) {
         // Check if the user is already logged in
         if(sessionService.getActiveUserSession() != null) {
@@ -46,13 +45,13 @@ public class AuthController {
         // Validate account fields
         if (user.getUsername().length() < 5) {
             ErrorResponse e = new ErrorResponse("Username must be at least 5 characters long");
-            return ResponseEntity.status(400).body(e);
-            //throw new InvalidInformationException("Username must be at least 5 characters long");
+            //return ResponseEntity.status(400).body(e);
+            throw new InvalidInformationException("Username must be at least 5 characters long");
         }
         if (user.getPassword().length() < 8) {
             ErrorResponse e = new ErrorResponse("Password must be at least 8 characters long");
-            return ResponseEntity.status(400).body(e);
-            //throw new InvalidInformationException("Password must be at least 8 characters long");
+           // return ResponseEntity.status(400).body(e);
+            throw new InvalidInformationException("Password must be at least 8 characters long");
         }
         if (!user.getPassword().matches(".*[a-z].*")) {
             ErrorResponse e = new ErrorResponse("Password must contain at least one lowercase letter\"");
@@ -82,7 +81,7 @@ public class AuthController {
                 .body(newUser);
     }
 
-    @PostMapping("/auth/sign-in")
+    @PostMapping("/sign-in")
     public ResponseEntity<?> login(@RequestBody User user, HttpServletRequest request) {
         // Check if the user is already logged in
         UserSessionResponse userSession = sessionService.getActiveUserSession();
@@ -105,15 +104,15 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(loggedInUser);
     }
 
-    @PostMapping("/auth/sign-out")
+    @PostMapping("/sign-out")
     public ResponseEntity<?> logout(HttpServletRequest request) {
         sessionService.endUserSession();
         ErrorResponse e = new ErrorResponse("Successfully logged out");
         return ResponseEntity.status(200).body(e);
     }
 
-    @GetMapping("/auth")
-    public ResponseEntity<?> profile(HttpServletRequest request) {
+    @GetMapping
+    public ResponseEntity<?> getSession(HttpServletRequest request) {
 
         UserSessionResponse user = sessionService.getActiveUserSession();
         if(user == null) {

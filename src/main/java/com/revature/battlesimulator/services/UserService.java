@@ -1,13 +1,12 @@
 package com.revature.battlesimulator.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.revature.battlesimulator.models.Role;
 import com.revature.battlesimulator.models.User;
 import com.revature.battlesimulator.repositories.UserRepository;
-import com.revature.battlesimulator.utils.custom_exceptions.DuplicateCharacterNameException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 
 
@@ -17,7 +16,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserService(UserRepository userRepository) {
