@@ -74,10 +74,10 @@ public class CharacterController {
     public ResponseEntity<Void> deleteCharacter(@PathVariable Long id) {
         UserSessionResponse userSession = sessionService.getCurrentSession();
         if (userSession == null) {
-            throw new InvalidSessionException("You must be logged in to delete a restaurant");
+            throw new InvalidSessionException("You must be logged in to delete a character");
         }
         if (userSession.getRole() != Role.ADMIN) {
-            throw new AuthorizationErrorException("You must be an admin to delete a restaurant");
+            throw new AuthorizationErrorException("You must be an admin to delete a character");
         }
         characterService.deleteCharacter(id);
         return ResponseEntity.noContent().build();
