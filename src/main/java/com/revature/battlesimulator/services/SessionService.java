@@ -16,38 +16,33 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SessionService {
 
-    private static final String USER_SESSION_KEY = "USER_SESSION";
+    private static final String ACTIVE_USER_ATTRIBUTE = "USER_SESSION";
 
-    public UserSessionResponse createSession(User user) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                .getRequest();
-        HttpSession session = request.getSession(true);
-
-        UserSessionResponse userSession = new UserSessionResponse(user);
-        session.setAttribute(USER_SESSION_KEY, userSession);
-
-        return userSession;
+    public UserSessionResponse startUserSession(User user) {
+        HttpSession session = getOrCreateSession(true);
+        UserSessionResponse userData = new UserSessionResponse(user);
+        session.setAttribute(ACTIVE_USER_ATTRIBUTE, userData);
+        return userData;
     }
 
-    public UserSessionResponse getCurrentSession() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                .getRequest();
-        HttpSession session = request.getSession(false);
-
-        if (session == null) {
-            return null;
-        }
-
-        return (UserSessionResponse) session.getAttribute(USER_SESSION_KEY);
-    }
-
-    public void invalidateSession() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-                .getRequest();
-        HttpSession session = request.getSession(false);
-
+    public void endUserSession() {
+        HttpSession session = getOrCreateSession(false);
         if (session != null) {
             session.invalidate();
         }
+    }
+
+    public UserSessionResponse getActiveUserSession() {
+        HttpSession session = getOrCreateSession(false);
+        if (session == null) {
+            return null;
+        }
+        return (UserSessionResponse) session.getAttribute(ACTIVE_USER_ATTRIBUTE);
+    }
+
+    private HttpSession getOrCreateSession(boolean create) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        return request.getSession(create);
     }
 }

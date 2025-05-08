@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.battlesimulator.services.CharacterService;
 import com.revature.battlesimulator.services.SessionService;
-import com.revature.battlesimulator.utils.custom_exceptions.AuthorizationErrorException;
-import com.revature.battlesimulator.utils.custom_exceptions.InvalidSessionException;
+import com.revature.battlesimulator.utils.custom_exceptions.InsufficientPermissionException;
+import com.revature.battlesimulator.utils.custom_exceptions.UnauthenticatedUserException;
 import com.revature.battlesimulator.dtos.requests.NewCharacterRequest;
 import com.revature.battlesimulator.dtos.requests.UpdateCharacterRequest;
 import com.revature.battlesimulator.dtos.responses.UserSessionResponse;
@@ -43,13 +43,7 @@ public class CharacterController {
 
     @PostMapping
     public ResponseEntity<Character> createCharacter(@RequestBody NewCharacterRequest newCharacterRequest) {
-        UserSessionResponse userSession = sessionService.getCurrentSession();
-        if (userSession == null) {
-            throw new InvalidSessionException("You must be logged in to create a character.");
-        }
-        if (userSession.getRole() != Role.ADMIN) {
-            throw new AuthorizationErrorException("You must be an admin to create a character.");
-        }
+        verifyAdminAccess("create a character");
 
         Character newCharacter = characterService.createCharacter(newCharacterRequest);
         return ResponseEntity.ok(newCharacter);
@@ -58,13 +52,7 @@ public class CharacterController {
     @PutMapping("/{id}")
     public ResponseEntity<Character> updateCharacter(@PathVariable Long id,
             @RequestBody UpdateCharacterRequest updateCharacterRequest) {
-        UserSessionResponse userSession = sessionService.getCurrentSession();
-        if (userSession == null) {
-            throw new InvalidSessionException("You must be logged in to update a character.");
-        }
-        if (userSession.getRole() != Role.ADMIN) {
-            throw new AuthorizationErrorException("You must be an admin to update a character.");
-        }
+        verifyAdminAccess("update a character");
         Character updatedCharacter = characterService.updateCharacter(id, updateCharacterRequest);
 
         return ResponseEntity.ok(updatedCharacter);
@@ -72,14 +60,18 @@ public class CharacterController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCharacter(@PathVariable Long id) {
-        UserSessionResponse userSession = sessionService.getCurrentSession();
-        if (userSession == null) {
-            throw new InvalidSessionException("You must be logged in to delete a character");
-        }
-        if (userSession.getRole() != Role.ADMIN) {
-            throw new AuthorizationErrorException("You must be an admin to delete a character");
-        }
+        verifyAdminAccess("delete a character");
         characterService.deleteCharacter(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private void verifyAdminAccess(String action) {
+        UserSessionResponse currentUser = sessionService.getActiveUserSession();
+        if (currentUser == null) {
+            throw new UnauthenticatedUserException("You must be logged in to " + action);
+        }
+        if (currentUser.getRole() != Role.ADMIN) {
+            throw new InsufficientPermissionException("You must be an admin to " + action);
+        }
     }
 }
