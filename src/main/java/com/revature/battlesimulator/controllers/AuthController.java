@@ -75,9 +75,8 @@ public class AuthController {
 
         // Register the new user
         userService.registerNewUser(user);
-        UserSessionResponse newUser = new UserSessionResponse(user);
         return ResponseEntity.status(201)
-                .body(newUser);
+                .build();
     }
 
     @PostMapping("/sign-in")
@@ -114,12 +113,12 @@ public class AuthController {
     public ResponseEntity<?> getSession(HttpServletRequest request) {
 
         UserSessionResponse user = sessionService.getActiveUserSession();
-        if(user == null) {
+        if (user == null) {
             ErrorResponse e = new ErrorResponse("User is not logged in");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e);
         } else {
             User user1 = userService.findByUsername(user.getUsername());
-            UserSessionResponse u = new UserSessionResponse(user1);            
+            UserSessionResponse u = new UserSessionResponse(user1);
             return ResponseEntity.ok(u);
         }
     }
