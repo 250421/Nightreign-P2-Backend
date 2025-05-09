@@ -114,11 +114,13 @@ public class AuthController {
     public ResponseEntity<?> getSession(HttpServletRequest request) {
 
         UserSessionResponse user = sessionService.getActiveUserSession();
-        if (user == null) {
+        if(user == null) {
             ErrorResponse e = new ErrorResponse("User is not logged in");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e);
         } else {
-            return ResponseEntity.ok(user);
+            User user1 = userService.findByUsername(user.getUsername());
+            UserSessionResponse u = new UserSessionResponse(user1);            
+            return ResponseEntity.ok(u);
         }
     }
 
