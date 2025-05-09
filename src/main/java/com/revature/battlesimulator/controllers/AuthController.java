@@ -14,6 +14,7 @@ import com.revature.battlesimulator.dtos.responses.UserSessionResponse;
 import com.revature.battlesimulator.models.User;
 import com.revature.battlesimulator.services.SessionService;
 import com.revature.battlesimulator.services.UserService;
+import com.revature.battlesimulator.utils.custom_exceptions.InsufficientPermissionException;
 import com.revature.battlesimulator.utils.custom_exceptions.InvalidInformationException;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -96,10 +97,9 @@ public class AuthController {
             return ResponseEntity.status(404).body(e);
             // throw new InvalidInformationException("Invalid Credentials");
         }
-        sessionService.startUserSession(user);
-        UserSessionResponse loggedInUser = new UserSessionResponse(found);
+        sessionService.startUserSession(found);
 
-        return ResponseEntity.status(HttpStatus.OK).body(loggedInUser);
+        return ResponseEntity.status(HttpStatus.OK).body(found);
     }
 
     @PostMapping("/sign-out")
@@ -110,17 +110,12 @@ public class AuthController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getSession(HttpServletRequest request) {
-
-        UserSessionResponse user = sessionService.getActiveUserSession();
-        if (user == null) {
-            ErrorResponse e = new ErrorResponse("User is not logged in");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e);
-        } else {
-            User user1 = userService.findByUsername(user.getUsername());
-            UserSessionResponse u = new UserSessionResponse(user1);
-            return ResponseEntity.ok(u);
+    public ResponseEntity<UserSessionResponse> getSession() {
+        UserSessionResponse userSession = sessionService.getActiveUserSession();
+        if (userSession == null) {
+            throw new InsufficientPermissionException("No active session found");
         }
+        return ResponseEntity.ok(userSession);
     }
 
 }
