@@ -1,8 +1,9 @@
 package com.revature.battlesimulator.repositories;
 
-import com.revature.battlesimulator.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.revature.battlesimulator.models.User;
 
 
 
@@ -12,5 +13,5 @@ public interface UserRepository extends JpaRepository<User, Long>{
     User findByUsernameAndPassword(String username, String password);
     User findByUsernameIgnoreCase(String username);
     User findByPassword(String password);
-    User findById(int id);
+    User findById(long id);
 }

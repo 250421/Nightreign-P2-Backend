@@ -44,34 +44,22 @@ public class AuthController {
 
         // Validate account fields
         if (user.getUsername().length() < 5) {
-            ErrorResponse e = new ErrorResponse("Username must be at least 5 characters long");
-            //return ResponseEntity.status(400).body(e);
             throw new InvalidInformationException("Username must be at least 5 characters long");
         }
         if (user.getPassword().length() < 8) {
-            ErrorResponse e = new ErrorResponse("Password must be at least 8 characters long");
-           // return ResponseEntity.status(400).body(e);
             throw new InvalidInformationException("Password must be at least 8 characters long");
         }
         if (!user.getPassword().matches(".*[a-z].*")) {
-            ErrorResponse e = new ErrorResponse("Password must contain at least one lowercase letter\"");
-            return ResponseEntity.status(400).body(e);
-            //throw new InvalidInformationException("Password must contain at least one lowercase letter\"");
+            throw new InvalidInformationException("Password must contain at least one lowercase letter\"");
         }
         if (!user.getPassword().matches(".*[A-Z].*")) {
-            ErrorResponse e = new ErrorResponse("Password must contain at least one uppercase letter");
-            return ResponseEntity.status(400).body(e);
-            //throw new InvalidInformationException("Password must contain at least one uppercase letter");
+            throw new InvalidInformationException("Password must contain at least one uppercase letter");
         }
         if (!user.getPassword().matches(".*\\d.*")) {
-            ErrorResponse e = new ErrorResponse("Password must contain at least one number");
-            return ResponseEntity.status(400).body(e);
-            //throw new InvalidInformationException("Password must contain at least one number");
+            throw new InvalidInformationException("Password must contain at least one number");
         }
         if (!user.getPassword().matches(".*[@$!%*?&].*")) {
-            ErrorResponse e = new ErrorResponse("Password must contain at least one special character (@$!%*?&)");
-            return ResponseEntity.status(400).body(e);
-            //throw new InvalidInformationException("Password must contain at least one special character (@$!%*?&)");
+            throw new InvalidInformationException("Password must contain at least one special character (@$!%*?&)");
         }
 
         // Register the new user
@@ -94,9 +82,7 @@ public class AuthController {
         // Attempt login
         User found = userService.login(user.getUsername(), user.getPassword());
         if (found == null) {
-            ErrorResponse e = new ErrorResponse("Invalid Credentials");
-            return ResponseEntity.status(404).body(e);
-            //throw new InvalidInformationException("Invalid Credentials");
+            throw new InvalidInformationException("Invalid Credentials");
         }
         sessionService.startUserSession(user);
         UserSessionResponse loggedInUser = new UserSessionResponse(found);
@@ -119,7 +105,9 @@ public class AuthController {
             ErrorResponse e = new ErrorResponse("User is not logged in");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e);
         } else {
-            return ResponseEntity.ok(user);
+            User user1 = userService.findByUsername(user.getUsername());
+            UserSessionResponse u = new UserSessionResponse(user1);            
+            return ResponseEntity.ok(u);
         }
     }
 

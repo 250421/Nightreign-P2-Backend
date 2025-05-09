@@ -51,7 +51,7 @@ public class UserService {
 
     //checks to see if a UserId is associated with a User or not
     //returns a User object of the User with the UserId if it exists, null otherwise
-    public User findByUserId(int UserId) {
+    public User findByUserId(long UserId) {
         if (userRepository.findById(UserId) == null) {
             return null;
         } else {
