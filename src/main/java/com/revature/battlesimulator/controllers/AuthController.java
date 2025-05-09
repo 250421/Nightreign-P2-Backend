@@ -19,7 +19,6 @@ import com.revature.battlesimulator.utils.custom_exceptions.InvalidInformationEx
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
-
 @RestController
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -32,7 +31,7 @@ public class AuthController {
     @PostMapping("/sign-up")
     public ResponseEntity<?> register(@RequestBody User user, HttpServletRequest request) {
         // Check if the user is already logged in
-        if(sessionService.getActiveUserSession() != null) {
+        if (sessionService.getActiveUserSession() != null) {
             ErrorResponse e = new ErrorResponse("You are already logged in.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e);
         }
@@ -44,34 +43,34 @@ public class AuthController {
 
         // Validate account fields
         if (user.getUsername().length() < 5) {
-            ErrorResponse e = new ErrorResponse("Username must be at least 5 characters long");
-            //return ResponseEntity.status(400).body(e);
             throw new InvalidInformationException("Username must be at least 5 characters long");
         }
         if (user.getPassword().length() < 8) {
-            ErrorResponse e = new ErrorResponse("Password must be at least 8 characters long");
-           // return ResponseEntity.status(400).body(e);
             throw new InvalidInformationException("Password must be at least 8 characters long");
         }
         if (!user.getPassword().matches(".*[a-z].*")) {
             ErrorResponse e = new ErrorResponse("Password must contain at least one lowercase letter\"");
             return ResponseEntity.status(400).body(e);
-            //throw new InvalidInformationException("Password must contain at least one lowercase letter\"");
+            // throw new InvalidInformationException("Password must contain at least one
+            // lowercase letter\"");
         }
         if (!user.getPassword().matches(".*[A-Z].*")) {
             ErrorResponse e = new ErrorResponse("Password must contain at least one uppercase letter");
             return ResponseEntity.status(400).body(e);
-            //throw new InvalidInformationException("Password must contain at least one uppercase letter");
+            // throw new InvalidInformationException("Password must contain at least one
+            // uppercase letter");
         }
         if (!user.getPassword().matches(".*\\d.*")) {
             ErrorResponse e = new ErrorResponse("Password must contain at least one number");
             return ResponseEntity.status(400).body(e);
-            //throw new InvalidInformationException("Password must contain at least one number");
+            // throw new InvalidInformationException("Password must contain at least one
+            // number");
         }
         if (!user.getPassword().matches(".*[@$!%*?&].*")) {
             ErrorResponse e = new ErrorResponse("Password must contain at least one special character (@$!%*?&)");
             return ResponseEntity.status(400).body(e);
-            //throw new InvalidInformationException("Password must contain at least one special character (@$!%*?&)");
+            // throw new InvalidInformationException("Password must contain at least one
+            // special character (@$!%*?&)");
         }
 
         // Register the new user
@@ -88,7 +87,7 @@ public class AuthController {
         if (userSession != null) {
             ErrorResponse e = new ErrorResponse("You are already logged in.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e);
-            //throw new AuthorizationErrorException("User already logged in.");
+            // throw new AuthorizationErrorException("User already logged in.");
         }
 
         // Attempt login
@@ -96,7 +95,7 @@ public class AuthController {
         if (found == null) {
             ErrorResponse e = new ErrorResponse("Invalid Credentials");
             return ResponseEntity.status(404).body(e);
-            //throw new InvalidInformationException("Invalid Credentials");
+            // throw new InvalidInformationException("Invalid Credentials");
         }
         sessionService.startUserSession(user);
         UserSessionResponse loggedInUser = new UserSessionResponse(found);
@@ -115,7 +114,7 @@ public class AuthController {
     public ResponseEntity<?> getSession(HttpServletRequest request) {
 
         UserSessionResponse user = sessionService.getActiveUserSession();
-        if(user == null) {
+        if (user == null) {
             ErrorResponse e = new ErrorResponse("User is not logged in");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e);
         } else {

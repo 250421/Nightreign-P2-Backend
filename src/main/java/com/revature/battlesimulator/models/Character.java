@@ -26,5 +26,7 @@ public class Character {
 
     @Column(name = "origin", nullable = false)
     private String origin;
-}
 
+    @Column(name = "character_image_url", nullable = true)
+    private String characterImageUrl;
+}
