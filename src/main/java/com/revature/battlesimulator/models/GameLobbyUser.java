@@ -1,6 +1,5 @@
+// GameLobbyUser.java
 package com.revature.battlesimulator.models;
-
-import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -8,6 +7,10 @@ import lombok.Data;
 public class GameLobbyUser {
     private Long userId;
     private String username;
-    private UserStatus status; // ONLINE, IN_GAME, etc.
-    private LocalDateTime joinedAt;
+
+    // Simple constructor
+    public GameLobbyUser(Long userId, String username) {
+        this.userId = userId;
+        this.username = username;
+    }
 }

@@ -1,97 +1,84 @@
+// LobbyService.java
 package com.revature.battlesimulator.services;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import com.revature.battlesimulator.dtos.requests.LobbyStatusUpdate;
 import com.revature.battlesimulator.dtos.responses.UserSessionResponse;
 import com.revature.battlesimulator.models.GameLobbyUser;
-import com.revature.battlesimulator.models.GameRoom;
-import com.revature.battlesimulator.models.GameStatus;
-import com.revature.battlesimulator.models.UserStatus;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class LobbyService {
+    // Messaging template to broadcast updates
     private final SimpMessagingTemplate messagingTemplate;
+    // Session service to get current user
     private final SessionService sessionService;
 
-    // In-memory store of online users and game rooms
+    // Store of online users (userId -> user)
     private final Map<Long, GameLobbyUser> onlineUsers = new ConcurrentHashMap<>();
-    private final Map<String, GameRoom> gameRooms = new ConcurrentHashMap<>();
 
-    public void userJoinedLobby(Long userId) {
-        UserSessionResponse userSession = sessionService.getActiveUserSession();
-        if (userSession == null)
-            return;
+    /**
+     * Called when a user enters the lobby
+     */
+    public void enterLobby() {
+        // Get the current logged-in user
+        UserSessionResponse currentUser = sessionService.getActiveUserSession();
+        if (currentUser == null) {
+            return; // Not logged in
+        }
 
-        GameLobbyUser lobbyUser = new GameLobbyUser();
-        lobbyUser.setUserId(userId);
-        lobbyUser.setUsername(userSession.getUsername());
-        lobbyUser.setStatus(UserStatus.ONLINE);
-        lobbyUser.setJoinedAt(LocalDateTime.now());
+        // Create lobby user object
+        GameLobbyUser lobbyUser = new GameLobbyUser(
+                currentUser.getId(),
+                currentUser.getUsername());
 
-        onlineUsers.put(userId, lobbyUser);
+        // Add to online users map
+        onlineUsers.put(currentUser.getId(), lobbyUser);
 
-        // Broadcast updated lobby state to all connected clients
+        // Send update to all clients
         broadcastLobbyUpdate();
     }
 
+    /**
+     * Called when a user leaves the lobby
+     */
+    public void leaveLobby() {
+        // Get the current logged-in user
+        UserSessionResponse currentUser = sessionService.getActiveUserSession();
+        if (currentUser == null) {
+            return; // Not logged in
+        }
+
+        // Remove from online users
+        onlineUsers.remove(currentUser.getId());
+
+        // Send update to all clients
+        broadcastLobbyUpdate();
+    }
+
+    /**
+     * Broadcasts the current lobby state to all connected clients
+     */
     private void broadcastLobbyUpdate() {
-        LobbyStatusUpdate update = new LobbyStatusUpdate();
-        update.setOnlineUsers(new ArrayList<>(onlineUsers.values()));
-        update.setGameRooms(new ArrayList<>(gameRooms.values()));
+        // Get list of all online users
+        List<GameLobbyUser> userList = new ArrayList<>(onlineUsers.values());
 
-        messagingTemplate.convertAndSend("/topic/lobby", update);
+        // Send to the "/topic/lobby" destination
+        messagingTemplate.convertAndSend("/topic/lobby", userList);
     }
 
-    public void userLeftLobby(Long userId) {
-        onlineUsers.remove(userId);
-        // Remove user from any game rooms
-        gameRooms.values().stream()
-                .filter(room -> isUserInRoom(userId, room))
-                .forEach(room -> handleUserLeaveRoom(userId, room.getRoomId()));
-
-        broadcastLobbyUpdate();
+    /**
+     * Get all currently online users
+     */
+    public List<GameLobbyUser> getOnlineUsers() {
+        return new ArrayList<>(onlineUsers.values());
     }
-
-    private boolean isUserInRoom(Long userId, GameRoom room) {
-        return (room.getPlayer1() != null && room.getPlayer1().getUserId().equals(userId)) ||
-                (room.getPlayer2() != null && room.getPlayer2().getUserId().equals(userId));
-    }
-
-    private void handleUserLeaveRoom(Long userId, String roomId) {
-        GameRoom room = gameRooms.get(roomId);
-        if (room == null)
-            return;
-
-        if (room.getPlayer1() != null && room.getPlayer1().getUserId().equals(userId)) {
-            if (room.getPlayer2() == null) {
-                // If creator leaves and no one else is in room, delete room
-                gameRooms.remove(roomId);
-            } else {
-                // Make player2 the new player1
-                room.setPlayer1(room.getPlayer2());
-                room.setPlayer2(null);
-                room.setStatus(GameStatus.WAITING_FOR_PLAYERS);
-            }
-        } else if (room.getPlayer2() != null && room.getPlayer2().getUserId().equals(userId)) {
-            room.setPlayer2(null);
-            room.setStatus(GameStatus.WAITING_FOR_PLAYERS);
-        }
-
-        // Update leaving user's status if they're still online
-        GameLobbyUser user = onlineUsers.get(userId);
-        if (user != null) {
-            user.setStatus(UserStatus.ONLINE);
-        }
-    }
-
 }
