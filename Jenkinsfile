@@ -4,7 +4,6 @@ pipeline {
         DOCKER_IMAGE = 'battle-simulator-backend'
         DOCKER_TAG = "${BUILD_NUMBER}"
         DB_CREDS = credentials('DB_CREDENTIALS')
-        JWT_SECRET = credentials('JWT_SECRET')
         DB_URL = credentials('DB_URL')
     }
     stages {
@@ -32,11 +31,10 @@ pipeline {
                     sh """
                         docker run -d \\
                         --name ${DOCKER_IMAGE} \\
-                        -p 8081:8080 \\
+                        -p 8082:8080 \\
                         -e SPRING_DATASOURCE_URL=${DB_URL} \\
                         -e SPRING_DATASOURCE_USERNAME=${DB_CREDS_USR} \\
                         -e SPRING_DATASOURCE_PASSWORD=${DB_CREDS_PSW} \\
-                        -e JWT_SECRET=${JWT_SECRET} \\
                         --restart unless-stopped \\
                         ${DOCKER_IMAGE}:${DOCKER_TAG}
                     """
