@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'battle-simulator-backend'
+        DOCKER_IMAGE = 'battlesimilator'
         DOCKER_TAG = "${BUILD_NUMBER}"
         DB_CREDS = credentials('DB_CREDENTIALS')
         DB_URL = credentials('DB_URL')
@@ -9,6 +9,9 @@ pipeline {
     stages {
         stage('Build') {
             steps {
+                // Print working directory for debugging
+                sh 'pwd'
+                sh 'ls -la'
                 // Build with Maven. Skip the test for check the connection. Must remove Dskiptest later
                 sh 'mvn clean package -DskipTests'
             }
