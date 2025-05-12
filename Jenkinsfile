@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'battlesimilator'
+        DOCKER_IMAGE = 'battlesimulator'
         DOCKER_TAG = "${BUILD_NUMBER}"
         DB_CREDS = credentials('DB_CREDENTIALS')
         DB_URL = credentials('DB_URL')
