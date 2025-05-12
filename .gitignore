@@ -1,5 +1,5 @@
 HELP.md
-# target/ temporarily delete for jenkins running
+target/ temporarily delete for jenkins running
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
