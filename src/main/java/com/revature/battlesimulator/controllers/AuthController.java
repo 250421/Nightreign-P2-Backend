@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "*", allowCredentials = "true")
 @RequestMapping("/auth")
 public class AuthController {
 
