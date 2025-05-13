@@ -1,5 +1,7 @@
 package com.revature.battlesimulator.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -57,5 +59,9 @@ public class UserService {
         } else {
             return userRepository.findById(UserId);
         }
+    }
+
+    public List<User> findByRoomId(String roomId) {
+        return userRepository.findByRoom_Id(roomId);
     }
 }

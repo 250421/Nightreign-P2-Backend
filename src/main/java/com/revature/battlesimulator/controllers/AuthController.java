@@ -19,11 +19,13 @@ import com.revature.battlesimulator.utils.custom_exceptions.InvalidInformationEx
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @RestController
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RequestMapping("/auth")
+@Data
 public class AuthController {
 
     private final UserService userService;
