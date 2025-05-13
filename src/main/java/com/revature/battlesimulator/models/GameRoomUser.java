@@ -4,12 +4,12 @@ package com.revature.battlesimulator.models;
 import lombok.Data;
 
 @Data
-public class GameLobbyUser {
+public class GameRoomUser {
     private Long userId;
     private String username;
 
     // Simple constructor
-    public GameLobbyUser(Long userId, String username) {
+    public GameRoomUser(Long userId, String username) {
         this.userId = userId;
         this.username = username;
     }
