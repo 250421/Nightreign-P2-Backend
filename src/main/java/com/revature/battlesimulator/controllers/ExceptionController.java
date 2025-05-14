@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.revature.battlesimulator.utils.custom_exceptions.CharacterNotFoundException;
 import com.revature.battlesimulator.utils.custom_exceptions.DuplicateCharacterNameException;
 import com.revature.battlesimulator.utils.custom_exceptions.InvalidInformationException;
+import com.revature.battlesimulator.utils.custom_exceptions.OpenAIException;
 import com.revature.battlesimulator.utils.custom_exceptions.UserNotFoundException;
 
 @ControllerAdvice
@@ -36,6 +37,13 @@ public class ExceptionController {
 
     @ExceptionHandler(InvalidInformationException.class)
     public ResponseEntity<Map<String, Object>> InvalidInformationException(InvalidInformationException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", e.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(OpenAIException.class)
+    public ResponseEntity<Map<String, Object>> OpenAIException(OpenAIException e) {
         Map<String, Object> response = new HashMap<>();
         response.put("message", e.getMessage());
         return ResponseEntity.badRequest().body(response);
