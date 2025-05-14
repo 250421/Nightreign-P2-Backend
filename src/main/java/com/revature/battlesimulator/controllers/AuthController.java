@@ -100,8 +100,9 @@ public class AuthController {
             // throw new InvalidInformationException("Invalid Credentials");
         }
         sessionService.startUserSession(found);
+        UserSessionResponse userSessionResponse = new UserSessionResponse(found.getId(), found.getUsername(), found.getRole());
 
-        return ResponseEntity.status(HttpStatus.OK).body(found);
+        return ResponseEntity.status(HttpStatus.OK).body(userSessionResponse);
     }
 
     @PostMapping("/sign-out")

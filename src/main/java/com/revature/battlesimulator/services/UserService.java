@@ -15,14 +15,14 @@ import com.revature.battlesimulator.repositories.UserRepository;
 @Service
 public class UserService {
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void registerNewUser(User User) {
@@ -53,11 +53,11 @@ public class UserService {
 
     //checks to see if a UserId is associated with a User or not
     //returns a User object of the User with the UserId if it exists, null otherwise
-    public User findByUserId(int UserId) {
-        if (userRepository.findById(UserId) == null) {
+    public User findByUserId(long userId) {
+        if (userRepository.findById(userId) == null) {
             return null;
         } else {
-            return userRepository.findById(UserId);
+            return userRepository.findById(userId);
         }
     }
 
