@@ -15,22 +15,15 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GameRoomService {
-    // Messaging template to broadcast updates
     private final SimpMessagingTemplate messagingTemplate;
 
     private final Map<String, GameRoom> gameRooms = new ConcurrentHashMap<>();
 
     public GameRoom createRoom(String roomName, Long userId, String username) {
-
         GameRoomUser creator = new GameRoomUser(userId, username);
-
-        // Create a new room
         GameRoom room = new GameRoom(roomName, creator);
         gameRooms.put(room.getId(), room);
-
-        // Broadcast to all clients that a new room is available
         broadcastRoomsList();
-
         return room;
     }
 
@@ -39,17 +32,12 @@ public class GameRoomService {
         if (room == null) {
             return false;
         }
-
         GameRoomUser user = new GameRoomUser(userId, username);
         boolean joined = room.addPlayer(user);
-
         if (joined) {
-            // Broadcast updates
             broadcastRoomsList();
-            // Also broadcast to the specific room
             messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
         }
-
         return joined;
     }
 
@@ -58,22 +46,14 @@ public class GameRoomService {
         if (room == null) {
             return false;
         }
-
         boolean left = room.removePlayer(userId);
-
-        // Remove the room if empty
         if (room.getPlayers().isEmpty()) {
             gameRooms.remove(roomId);
         }
-
-        // Broadcast updates
         broadcastRoomsList();
-
-        // Also broadcast to the specific room if it still exists
         if (gameRooms.containsKey(roomId)) {
             messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
         }
-
         return left;
     }
 
