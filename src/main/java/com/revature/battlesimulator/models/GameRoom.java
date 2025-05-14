@@ -32,6 +32,8 @@ public class GameRoom {
     }
 
     public boolean removePlayer(Long userId) {
-        return players.removeIf(player -> player.getUserId().equals(userId));
+        boolean isRemoved = players.removeIf(player -> player.getUserId().equals(userId));
+
+        return isRemoved;
     }
 }
