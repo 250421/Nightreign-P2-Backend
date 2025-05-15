@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import com.revature.battlesimulator.models.GameRoomUser;
+import com.revature.battlesimulator.models.Character;
 import com.revature.battlesimulator.models.GameRoom;
 import lombok.RequiredArgsConstructor;
 import com.revature.battlesimulator.models.Character;
