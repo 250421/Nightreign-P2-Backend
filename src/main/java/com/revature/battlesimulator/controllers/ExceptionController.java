@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.revature.battlesimulator.utils.custom_exceptions.CharacterNotFoundException;
@@ -15,6 +16,7 @@ import com.revature.battlesimulator.utils.custom_exceptions.UserNotFoundExceptio
 import com.revature.battlesimulator.utils.custom_exceptions.InsufficientPermissionException;
 
 @ControllerAdvice
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"}, allowCredentials = "true")
 public class ExceptionController {
     @ExceptionHandler(CharacterNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidUsernameException(CharacterNotFoundException e) {
@@ -49,7 +51,7 @@ public class ExceptionController {
         response.put("message", e.getMessage());
         return ResponseEntity.badRequest().body(response);
     }
-    
+
     @ExceptionHandler(InsufficientPermissionException.class)
     public ResponseEntity<Map<String, Object>> InsufficientPermissionException(InsufficientPermissionException e) {
         Map<String, Object> response = new HashMap<>();

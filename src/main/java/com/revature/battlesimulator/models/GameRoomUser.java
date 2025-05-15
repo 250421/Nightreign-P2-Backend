@@ -11,13 +11,17 @@ public class GameRoomUser {
     private Long userId;
     private String username;
     private List<Character> activeCharacters;
-    private List<Character> defatedCharacters;
+    private List<Character> defeatedCharacters;
+    private boolean battleReady = false;
+    private Character selectedCharacter = null;
+
+
 
     public GameRoomUser(Long userId, String username) {
         this.userId = userId;
         this.username = username;
         this.activeCharacters = new ArrayList<>();
-        this.defatedCharacters = new ArrayList<>();
+        this.defeatedCharacters = new ArrayList<>();
     }
 
     public GameRoomUser(Long userId, String username, List<Character> activeCharacters,
@@ -25,6 +29,6 @@ public class GameRoomUser {
         this.userId = userId;
         this.username = username;
         this.activeCharacters = activeCharacters;
-        this.defatedCharacters = defatedCharacters;
+        this.defeatedCharacters = defatedCharacters;
     }
 }
