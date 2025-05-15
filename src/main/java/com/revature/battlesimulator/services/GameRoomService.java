@@ -9,26 +9,16 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import com.revature.battlesimulator.models.GameRoomUser;
 import com.revature.battlesimulator.models.GameRoom;
-import com.revature.battlesimulator.models.Character;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class GameRoomService {
     private final SimpMessagingTemplate messagingTemplate;
-    private final CharacterService characterService;
-
     private final Map<String, GameRoom> gameRooms = new ConcurrentHashMap<>();
 
     public GameRoom createRoom(String roomName, Long userId, String username) {
         GameRoomUser creator = new GameRoomUser(userId, username);
-        Character char1 = characterService.getCharacterById(2L);
-        Character char2 = characterService.getCharacterById(4L);
-        Character char3 = characterService.getCharacterById(21L);
-        creator.getActiveCharacters().add(char1);
-        creator.getActiveCharacters().add(char2);
-        creator.getActiveCharacters().add(char3);
         GameRoom room = new GameRoom(roomName, creator);
         gameRooms.put(room.getId(), room);
         broadcastRoomsList();
@@ -41,12 +31,6 @@ public class GameRoomService {
             return false;
         }
         GameRoomUser user = new GameRoomUser(userId, username);
-        Character char1 = characterService.getCharacterById(2L);
-        Character char2 = characterService.getCharacterById(4L);
-        Character char3 = characterService.getCharacterById(21L);
-        user.getActiveCharacters().add(char1);
-        user.getActiveCharacters().add(char2);
-        user.getActiveCharacters().add(char3);
         boolean joined = room.addPlayer(user);
         if (joined) {
             broadcastRoomsList();

@@ -22,7 +22,9 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:5174" }, allowCredentials = "true")
+
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+
 public class GameRoomController {
     private final GameRoomService gameRoomService;
     private static final Logger logger = LoggerFactory.getLogger(GameRoomController.class);
@@ -82,6 +84,7 @@ public class GameRoomController {
      * 
      * @return List<GameRoom> - A list of all game rooms
      */
+
     @GetMapping("/rooms")
     @ResponseBody
     public List<GameRoom> getAllRooms() {
