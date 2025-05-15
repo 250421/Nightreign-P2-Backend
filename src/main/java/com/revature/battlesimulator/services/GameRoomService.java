@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.revature.battlesimulator.models.GameRoomUser;
 import com.revature.battlesimulator.models.GameRoom;
 import lombok.RequiredArgsConstructor;
+import com.revature.battlesimulator.models.Character;
 
 @Service
 @RequiredArgsConstructor
