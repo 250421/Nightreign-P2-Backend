@@ -13,20 +13,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.revature.battlesimulator.dtos.requests.CreateRoomRequest;
-import com.revature.battlesimulator.dtos.requests.IsReadyRequest;
 import com.revature.battlesimulator.dtos.requests.JoinRoomRequest;
 import com.revature.battlesimulator.dtos.requests.LeaveRoomRequest;
 import com.revature.battlesimulator.models.GameRoom;
-import com.revature.battlesimulator.services.BattleService;
 import com.revature.battlesimulator.services.GameRoomService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"}, allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class GameRoomController {
     private final GameRoomService gameRoomService;
-    private final BattleService battleService;
     private static final Logger logger = LoggerFactory.getLogger(GameRoomController.class);
 
     @MessageMapping("/room/create")
@@ -48,11 +45,6 @@ public class GameRoomController {
         logger.info("Received leave room request: {}", request);
         gameRoomService.leaveRoom(request.getRoomId(), request.getUserId());
     }
-
-    // @MessageMapping("/battle/isReady")
-    // public void isReady(IsReadyRequest request) {
-    //     battleService.updatePlayer(request.getRoomId());
-    // }
 
     @GetMapping("/rooms")
     @ResponseBody
