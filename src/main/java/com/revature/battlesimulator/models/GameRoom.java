@@ -11,6 +11,13 @@ public class GameRoom {
     private String name;
     private GameRoomUser creator;
     private List<GameRoomUser> players = new ArrayList<>();
+    private RoomStatus status = RoomStatus.WAITING_FOR_PLAYERS;
+
+    public enum RoomStatus {
+        WAITING_FOR_PLAYERS,
+        CHOOSING_CHARACTERS,
+        IN_BATTLE,
+    }
 
     public GameRoom(String name, GameRoomUser creator) {
         this.id = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8);

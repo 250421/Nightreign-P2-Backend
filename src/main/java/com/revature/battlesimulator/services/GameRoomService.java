@@ -34,6 +34,7 @@ public class GameRoomService {
         GameRoomUser user = new GameRoomUser(userId, username);
         boolean joined = room.addPlayer(user);
         if (joined) {
+            updateRoomStatus(roomId);
             broadcastRoomsList();
             messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
         }
@@ -48,6 +49,8 @@ public class GameRoomService {
         boolean left = room.removePlayer(userId);
         if (room.getPlayers().isEmpty()) {
             gameRooms.remove(roomId);
+        } else {
+            updateRoomStatus(roomId);
         }
         broadcastRoomsList();
         if (gameRooms.containsKey(roomId)) {
@@ -88,7 +91,28 @@ public class GameRoomService {
             player.setActiveCharacters(activeCharacters);
             player.setReadyForBattle(isReadyForBattle);
             messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+            updateRoomStatus(roomId);
         }
+    }
+
+    public void updateRoomStatus(String roomId) {
+        GameRoom room = gameRooms.get(roomId);
+        if (room == null) {
+            return;
+        }
+        if (room.getPlayers().size() >= 2) {
+            GameRoomUser player1 = room.getPlayers().get(0);
+            GameRoomUser player2 = room.getPlayers().get(1);
+            if (player1.isReadyForBattle() && player2.isReadyForBattle()) {
+                room.setStatus(GameRoom.RoomStatus.IN_BATTLE);
+            } else {
+                room.setStatus(GameRoom.RoomStatus.CHOOSING_CHARACTERS);
+            }
+        } else if (room.getPlayers().size() == 1) {
+            room.setStatus(GameRoom.RoomStatus.WAITING_FOR_PLAYERS);
+        }
+
+        messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
     }
 
     private void broadcastRoomsList() {
