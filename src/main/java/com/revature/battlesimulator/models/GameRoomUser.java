@@ -13,9 +13,8 @@ public class GameRoomUser {
     private List<Character> activeCharacters;
     private List<Character> defeatedCharacters;
     private boolean battleReady = false;
+    private boolean isReadyForBattle = false;
     private Character selectedCharacter = null;
-
-
 
     public GameRoomUser(Long userId, String username) {
         this.userId = userId;
