@@ -92,6 +92,20 @@ public class GameRoomService {
         return gameRooms.get(roomId);
     }
 
+    public void updatePlayer(String roomId, Long userId, List<Character> activeCharacters,
+            boolean isReadyForBattle) {
+        GameRoom room = gameRooms.get(roomId);
+        if (room == null) {
+            return;
+        }
+        GameRoomUser player = getUserFromRoom(roomId, userId);
+        if (player != null) {
+            player.setActiveCharacters(activeCharacters);
+            player.setReadyForBattle(isReadyForBattle);
+            messagingTemplate.convertAndSend("/topic/room/" + roomId, room);
+        }
+    }
+
     private void broadcastRoomsList() {
         messagingTemplate.convertAndSend("/topic/rooms", getAllRooms());
     }

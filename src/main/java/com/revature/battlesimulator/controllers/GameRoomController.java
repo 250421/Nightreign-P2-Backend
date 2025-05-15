@@ -16,6 +16,7 @@ import com.revature.battlesimulator.dtos.requests.CreateRoomRequest;
 import com.revature.battlesimulator.dtos.requests.IsReadyRequest;
 import com.revature.battlesimulator.dtos.requests.JoinRoomRequest;
 import com.revature.battlesimulator.dtos.requests.LeaveRoomRequest;
+import com.revature.battlesimulator.dtos.requests.UpdatePlayerRequest;
 import com.revature.battlesimulator.models.GameRoom;
 import com.revature.battlesimulator.services.BattleService;
 import com.revature.battlesimulator.services.GameRoomService;
@@ -23,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:5174"}, allowCredentials = "true")
+@CrossOrigin(origins = { "http://localhost:5173", "http://localhost:5174" }, allowCredentials = "true")
 public class GameRoomController {
     private final GameRoomService gameRoomService;
     private final BattleService battleService;
@@ -49,9 +50,16 @@ public class GameRoomController {
         gameRoomService.leaveRoom(request.getRoomId(), request.getUserId());
     }
 
+    @MessageMapping("/room/ready")
+    public void updatePlayer(UpdatePlayerRequest request) {
+        logger.info("Received update player request: {}", request);
+        gameRoomService.updatePlayer(request.getRoomId(), request.getUserId(),
+                request.getActiveCharacters(), request.isReadyForBattle());
+    }
+
     // @MessageMapping("/battle/isReady")
     // public void isReady(IsReadyRequest request) {
-    //     battleService.updatePlayer(request.getRoomId());
+    // battleService.updatePlayer(request.getRoomId());
     // }
 
     @GetMapping("/rooms")

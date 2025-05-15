@@ -10,20 +10,5 @@ import lombok.NoArgsConstructor;
 public class NewCharacterRequest {
     private String name;
     private String origin;
-
-    public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
+    private String characterImageUrl;
 }
