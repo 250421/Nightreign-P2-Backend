@@ -20,7 +20,6 @@ public class GameRoom {
     }
 
     public boolean addPlayer(GameRoomUser user) {
-        // Check if the user is already in the room
         for (GameRoomUser player : players) {
             if (player.getUserId().equals(user.getUserId())) {
                 return false;
