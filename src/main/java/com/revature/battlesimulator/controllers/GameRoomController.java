@@ -18,6 +18,8 @@ import com.revature.battlesimulator.dtos.requests.LeaveRoomRequest;
 import com.revature.battlesimulator.dtos.requests.UpdatePlayerRequest;
 import com.revature.battlesimulator.models.GameRoom;
 import com.revature.battlesimulator.services.GameRoomService;
+import com.revature.battlesimulator.utils.custom_exceptions.GameRoomNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -101,10 +103,10 @@ public class GameRoomController {
     @GetMapping("/room/{roomId}")
     @ResponseBody
     public ResponseEntity<GameRoom> getRoomDetails(@PathVariable String roomId) {
-        logger.info("Getting room details for ID: ", roomId);
+        logger.info("Getting room details for ID: {}", roomId);
         GameRoom room = gameRoomService.getRoomById(roomId);
         if (room == null) {
-            return ResponseEntity.notFound().build();
+            throw new GameRoomNotFoundException("Room not found with ID: " + roomId);
         }
         return ResponseEntity.ok(room);
     }
