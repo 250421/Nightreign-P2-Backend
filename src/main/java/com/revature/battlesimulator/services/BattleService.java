@@ -76,18 +76,19 @@ public class BattleService {
         String player1Name = player1.getUsername();
         String player2Name = player2.getUsername();
         String prompt = String.format(
-                """
-                        Respond strictly in JSON format.
-                        Return a JSON object with two fields: "winner" and "reason".
+            """
+                Respond strictly in JSON format.
+                Return a JSON object with three fields: "winner", "reason", and "winningCharacter".
 
-                        Simulate a battle between:
-                        - %s: %s
-                        - %s: %s
+                Simulate a battle between:
+                - %s: %s
+                - %s: %s
 
-                        If both players selected the same character, treat them as versions from different timelines or universes with distinct strategies, personalities, or combat experience. Choose a winner based on who would realistically come out on top in a head-to-head battle.
-                        Label the winner as either "%s" or "%s" in the "winner" field.
-                        """,
-                player1Name, fighter1, player2Name, fighter2, player1Name, player2Name);
+                If both players selected the same character, treat them as versions from different timelines or universes with distinct strategies, personalities, or combat experience. Choose a winner based on who would realistically come out on top in a head-to-head battle.
+                Label the winner as either "%s" or "%s" in the "winner" field.
+                Label the winning character as either "%s" or "%s" in the "winningCharacter" field.
+                """,
+            player1Name, fighter1, player2Name, fighter2, player1Name, player2Name, fighter1, fighter2);
 
         String response = chatClient.call(prompt);
 
