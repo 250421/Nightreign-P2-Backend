@@ -11,14 +11,16 @@ import com.revature.battlesimulator.repositories.UserRepository;
 @Service
 public class UserService {
 
-    @Autowired
+    //@Autowired
     private PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+
     }
 
     public void registerNewUser(User User) {
