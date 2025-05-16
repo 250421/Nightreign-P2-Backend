@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import com.revature.battlesimulator.models.GameRoomUser;
+
 import com.revature.battlesimulator.models.Character;
 import com.revature.battlesimulator.models.GameRoom;
+import com.revature.battlesimulator.models.GameRoomUser;
+
 import lombok.RequiredArgsConstructor;
-import com.revature.battlesimulator.models.Character;
 
 @Service
 @RequiredArgsConstructor
