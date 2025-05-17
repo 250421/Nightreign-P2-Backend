@@ -29,7 +29,11 @@ import lombok.Data;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/characters")
-@CrossOrigin(origins = {"http://localhost:5173", "http://3.17.145.172:8082"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:5173", 
+                        "http://3.17.145.172:8082/",
+                        "http://3.17.145.172:8080/",
+                        "http://3.17.145.172:3000/"}, 
+                        allowCredentials = "true")
 @Data
 public class CharacterController {
     private final CharacterService characterService;
