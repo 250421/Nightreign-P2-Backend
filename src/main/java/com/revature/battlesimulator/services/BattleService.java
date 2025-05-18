@@ -63,7 +63,7 @@ public class BattleService {
             loser.getDefeatedCharacters().add(loser.getSelectedCharacter());
 
             players.forEach(player -> player.setBattleReady(false));
-            messagingTemplate.convertAndSend("/topic/battle/isReady/" + roomId,
+            messagingTemplate.convertAndSend("/topic/battle/isComplete/" + roomId,
                 gameRoomService.getRoomById(roomId).getPlayers());
         }
     }
