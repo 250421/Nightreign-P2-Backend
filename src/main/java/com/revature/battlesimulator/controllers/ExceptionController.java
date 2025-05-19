@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.revature.battlesimulator.utils.custom_exceptions.CharacterNotFoundException;
 import com.revature.battlesimulator.utils.custom_exceptions.DuplicateCharacterNameException;
 import com.revature.battlesimulator.utils.custom_exceptions.InvalidInformationException;
+import com.revature.battlesimulator.utils.custom_exceptions.OpenAIException;
 import com.revature.battlesimulator.utils.custom_exceptions.UserNotFoundException;
+import com.revature.battlesimulator.utils.custom_exceptions.InsufficientPermissionException;
 
 @ControllerAdvice
 public class ExceptionController {
@@ -39,5 +41,19 @@ public class ExceptionController {
         Map<String, Object> response = new HashMap<>();
         response.put("message", e.getMessage());
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(OpenAIException.class)
+    public ResponseEntity<Map<String, Object>> OpenAIException(OpenAIException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", e.getMessage());
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(InsufficientPermissionException.class)
+    public ResponseEntity<Map<String, Object>> InsufficientPermissionException(InsufficientPermissionException e) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", e.getMessage());
+        return ResponseEntity.status(403).body(response);
     }
 }
